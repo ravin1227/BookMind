@@ -1,0 +1,310 @@
+# BookMind Project Root .gitignore
+
+# ===========================================
+# React Native Mobile App (BookMindMobile)
+# ===========================================
+
+# Dependencies
+BookMindMobile/node_modules/
+BookMindMobile/package-lock.json
+BookMindMobile/yarn.lock
+
+# Build outputs
+BookMindMobile/android/app/build/
+BookMindMobile/android/build/
+BookMindMobile/ios/build/
+BookMindMobile/ios/Pods/
+BookMindMobile/ios/Podfile.lock
+BookMindMobile/*.jsbundle
+
+# Development files
+BookMindMobile/.metro-health-check*
+BookMindMobile/coverage/
+BookMindMobile/.env
+BookMindMobile/.env.local
+BookMindMobile/.env.development.local
+BookMindMobile/.env.test.local
+BookMindMobile/.env.production.local
+
+# Logs
+BookMindMobile/npm-debug.log*
+BookMindMobile/yarn-debug.log*
+BookMindMobile/yarn-error.log*
+BookMindMobile/lerna-debug.log*
+
+# Runtime data
+BookMindMobile/pids
+BookMindMobile/*.pid
+BookMindMobile/*.seed
+BookMindMobile/*.pid.lock
+
+# Coverage directory used by tools like istanbul
+BookMindMobile/coverage/
+BookMindMobile/.nyc_output
+
+# Dependency directories
+BookMindMobile/node_modules/
+BookMindMobile/jspm_packages/
+
+# Optional npm cache directory
+BookMindMobile/.npm
+
+# Optional eslint cache
+BookMindMobile/.eslintcache
+
+# Microbundle cache
+BookMindMobile/.rpt2_cache/
+BookMindMobile/.rts2_cache_cjs/
+BookMindMobile/.rts2_cache_es/
+BookMindMobile/.rts2_cache_umd/
+
+# Optional REPL history
+BookMindMobile/.node_repl_history
+
+# Output of 'npm pack'
+BookMindMobile/*.tgz
+
+# Yarn Integrity file
+BookMindMobile/.yarn-integrity
+
+# dotenv environment variables file
+BookMindMobile/.env
+BookMindMobile/.env.test
+
+# parcel-bundler cache (https://parceljs.org/)
+BookMindMobile/.cache
+BookMindMobile/.parcel-cache
+
+# Next.js build output
+BookMindMobile/.next
+
+# Nuxt.js build / generate output
+BookMindMobile/.nuxt
+BookMindMobile/dist
+
+# Gatsby files
+BookMindMobile/.cache/
+BookMindMobile/public
+
+# Storybook build outputs
+BookMindMobile.out
+BookMindMobile.storybook-out
+
+# Temporary folders
+BookMindMobile/tmp/
+BookMindMobile/temp/
+
+# ===========================================
+# iOS Specific (BookMindMobile/ios/)
+# ===========================================
+
+# Xcode
+BookMindMobile/ios/build/
+BookMindMobile/ios/DerivedData/
+BookMindMobile/ios/*.pbxuser
+BookMindMobile/ios/!default.pbxuser
+BookMindMobile/ios/*.mode1v3
+BookMindMobile/ios/!default.mode1v3
+BookMindMobile/ios/*.mode2v3
+BookMindMobile/ios/!default.mode2v3
+BookMindMobile/ios/*.perspectivev3
+BookMindMobile/ios/!default.perspectivev3
+BookMindMobile/ios/xcuserdata/
+BookMindMobile/ios/*.xccheckout
+BookMindMobile/ios/*.moved-aside
+BookMindMobile/ios/*.hmap
+BookMindMobile/ios/*.ipa
+BookMindMobile/ios/*.xcuserstate
+BookMindMobile/ios/**/.xcode.env.local
+
+# CocoaPods
+BookMindMobile/ios/Pods/
+BookMindMobile/ios/Podfile.lock
+
+# ===========================================
+# Android Specific (BookMindMobile/android/)
+# ===========================================
+
+# Android/IntelliJ
+BookMindMobile/android/build/
+BookMindMobile/android/.idea/
+BookMindMobile/android/.gradle/
+BookMindMobile/android/local.properties
+BookMindMobile/android/*.iml
+BookMindMobile/android/*.hprof
+BookMindMobile/android/.cxx/
+BookMindMobile/android/*.keystore
+BookMindMobile/android/!debug.keystore
+BookMindMobile/android/.kotlin/
+
+# ===========================================
+# Fastlane
+# ===========================================
+
+BookMindMobile/**/fastlane/report.xml
+BookMindMobile/**/fastlane/Preview.html
+BookMindMobile/**/fastlane/screenshots
+BookMindMobile/**/fastlane/test_output
+
+# ===========================================
+# OS Generated Files
+# ===========================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ===========================================
+# IDE and Editor Files
+# ===========================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ===========================================
+# Project Specific
+# ===========================================
+
+# Design files (keep UI design folder but ignore large files)
+ui design /*.zip
+ui design /*.psd
+ui design /*.ai
+ui design /*.sketch
+
+# Documentation build outputs
+docs/_build/
+docs/.doctrees/
+
+# Backup files
+*.bak
+*.backup
+*.tmp
+*.temp
+
+# ===========================================
+# Security and Sensitive Files
+# ===========================================
+
+# API keys and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+secrets.json
+config/secrets.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# ===========================================
+# Logs and Debugging
+# ===========================================
+
+# Log files
+*.log
+logs/
+log/
+
+# Debug files
+debug.log
+error.log
+access.log
+
+# ===========================================
+# Archive and Compression
+# ===========================================
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ===========================================
+# Testing and Coverage
+# ===========================================
+
+# Test coverage
+coverage/
+.nyc_output/
+.coverage
+htmlcov/
+
+# Jest
+jest-results.xml
+
+# ===========================================
+# Package Managers
+# ===========================================
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# npm
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===========================================
+# Miscellaneous
+# ===========================================
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Lock files (uncomment if you want to ignore them)
+# package-lock.json
+# yarn.lock
+# Podfile.lock

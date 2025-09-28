@@ -666,6 +666,263 @@ Authorization: Bearer {accessToken}
 }
 ```
 
+## 📤 Social Sharing API
+
+### Generate Quote Card
+```http
+POST /books/{bookId}/quotes/generate-card
+Authorization: Bearer {accessToken}
+Content-Type: application/json
+
+{
+  "highlightId": "highlight-uuid",
+  "templateId": "minimalist-pro",
+  "customizations": {
+    "backgroundColor": "#667eea",
+    "textColor": "#ffffff",
+    "fontFamily": "Georgia",
+    "includeBookInfo": true,
+    "includeUserAttribution": true,
+    "logoPlacement": "bottom-right"
+  },
+  "dimensions": {
+    "width": 1200,
+    "height": 675,
+    "platform": "twitter"
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "quoteCard": {
+    "id": "card-uuid",
+    "imageUrl": "https://cdn.bookmind.ai/quote-cards/card-uuid.png",
+    "downloadUrl": "https://api.bookmind.ai/downloads/card-uuid.png",
+    "shareableUrl": "https://bookmind.ai/quotes/card-uuid",
+    "expiresAt": "2024-01-16T10:30:00Z",
+    "metadata": {
+      "quote": "The only way to do great work is to love what you do.",
+      "author": "Steve Jobs",
+      "book": "Steve Jobs Biography",
+      "template": "minimalist-pro",
+      "dimensions": "1200x675",
+      "generatedAt": "2024-01-15T10:30:00Z"
+    }
+  }
+}
+```
+
+### Share Quote to Social Media
+```http
+POST /books/{bookId}/quotes/{quoteId}/share
+Authorization: Bearer {accessToken}
+Content-Type: application/json
+
+{
+  "platforms": ["twitter", "instagram", "linkedin"],
+  "quoteCardId": "card-uuid",
+  "message": "Powerful insight from Steve Jobs! 💡",
+  "hashtags": ["BookMind", "Reading", "Inspiration", "SteveJobs"],
+  "includeBookInfo": true,
+  "customMessage": "This quote changed my perspective on work...",
+  "scheduleAt": "2024-01-15T18:00:00Z"
+}
+```
+
+**Response**:
+```json
+{
+  "shareResult": {
+    "shareId": "share-uuid",
+    "platforms": [
+      {
+        "platform": "twitter",
+        "status": "success",
+        "postId": "twitter-post-id",
+        "url": "https://twitter.com/user/status/12345",
+        "scheduledFor": "2024-01-15T18:00:00Z"
+      },
+      {
+        "platform": "instagram",
+        "status": "success",
+        "postId": "instagram-post-id",
+        "url": "https://instagram.com/p/abc123"
+      },
+      {
+        "platform": "linkedin",
+        "status": "pending",
+        "message": "Post scheduled for review"
+      }
+    ],
+    "referralLink": "https://bookmind.ai/join?ref=quote-uuid",
+    "trackingId": "tracking-uuid"
+  }
+}
+```
+
+### Get Quote Templates
+```http
+GET /quote-templates
+Authorization: Bearer {accessToken}
+```
+
+**Response**:
+```json
+{
+  "templates": [
+    {
+      "id": "minimalist-pro",
+      "name": "Minimalist Professional",
+      "category": "professional",
+      "isPremium": false,
+      "previewUrl": "https://cdn.bookmind.ai/templates/minimalist-pro-preview.jpg",
+      "features": ["gradient-background", "serif-typography", "clean-layout"],
+      "platforms": ["twitter", "linkedin", "facebook"],
+      "customizable": {
+        "colors": true,
+        "fonts": ["Georgia", "Times", "Playfair"],
+        "layouts": ["center", "left-align"],
+        "backgrounds": ["gradient", "solid", "pattern"]
+      }
+    },
+    {
+      "id": "artistic-inspiration",
+      "name": "Artistic Inspiration",
+      "category": "creative",
+      "isPremium": true,
+      "previewUrl": "https://cdn.bookmind.ai/templates/artistic-preview.jpg",
+      "features": ["background-images", "overlay-effects", "decorative-elements"],
+      "platforms": ["instagram", "pinterest", "twitter"]
+    }
+  ],
+  "categories": [
+    { "id": "professional", "name": "Professional", "count": 8 },
+    { "id": "creative", "name": "Creative", "count": 12 },
+    { "id": "academic", "name": "Academic", "count": 6 },
+    { "id": "motivational", "name": "Motivational", "count": 10 }
+  ]
+}
+```
+
+### Get Trending Quotes
+```http
+GET /quotes/trending
+Authorization: Bearer {accessToken}
+```
+
+**Query Parameters**:
+- `timeframe`: 24h, 7d, 30d (default: 24h)
+- `category`: all, fiction, business, self-help, academic
+- `platform`: all, twitter, instagram, linkedin
+- `limit`: Number of quotes (default: 20, max: 100)
+
+**Response**:
+```json
+{
+  "trendingQuotes": [
+    {
+      "id": "quote-uuid",
+      "text": "The only way to do great work is to love what you do.",
+      "author": "Steve Jobs",
+      "book": {
+        "id": "book-uuid",
+        "title": "Steve Jobs Biography",
+        "author": "Walter Isaacson"
+      },
+      "metrics": {
+        "totalShares": 1247,
+        "platforms": {
+          "twitter": 856,
+          "linkedin": 234,
+          "instagram": 157
+        },
+        "engagement": 0.087,
+        "viralityScore": 8.4
+      },
+      "sampleCard": "https://cdn.bookmind.ai/trending/quote-uuid-sample.jpg",
+      "createdAt": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "analytics": {
+    "totalShares": 12847,
+    "topBooks": [
+      { "title": "Atomic Habits", "shares": 2341 },
+      { "title": "The Psychology of Money", "shares": 1876 }
+    ],
+    "topAuthors": [
+      { "name": "James Clear", "shares": 2341 },
+      { "name": "Morgan Housel", "shares": 1876 }
+    ]
+  }
+}
+```
+
+### Track Quote Performance
+```http
+GET /quotes/{quoteId}/analytics
+Authorization: Bearer {accessToken}
+```
+
+**Response**:
+```json
+{
+  "analytics": {
+    "quoteId": "quote-uuid",
+    "totalShares": 247,
+    "totalViews": 12847,
+    "totalEngagement": 1087,
+    "conversionRate": 0.034,
+
+    "platformBreakdown": [
+      {
+        "platform": "twitter",
+        "shares": 156,
+        "views": 8234,
+        "likes": 421,
+        "retweets": 67,
+        "clickThroughs": 34
+      },
+      {
+        "platform": "instagram",
+        "shares": 91,
+        "views": 4613,
+        "likes": 387,
+        "saves": 45,
+        "clickThroughs": 23
+      }
+    ],
+
+    "timelineData": [
+      {
+        "date": "2024-01-15",
+        "shares": 89,
+        "views": 4521,
+        "engagement": 312
+      }
+    ],
+
+    "demographics": {
+      "topCountries": ["US", "UK", "Canada", "Australia"],
+      "ageGroups": {
+        "18-24": 0.23,
+        "25-34": 0.41,
+        "35-44": 0.28,
+        "45+": 0.08
+      }
+    },
+
+    "viralityMetrics": {
+      "viralCoefficient": 1.23,
+      "peakMoment": "2024-01-15T14:30:00Z",
+      "secondaryShares": 67,
+      "influencerShares": 3
+    }
+  }
+}
+```
+
 ## 📊 Reading Analytics API
 
 ### Update Reading Progress

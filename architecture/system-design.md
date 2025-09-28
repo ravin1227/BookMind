@@ -2,61 +2,81 @@
 
 ## 🎯 Architecture Overview
 
-BookMind follows a modern, scalable architecture designed for cross-platform delivery with intelligent AI integration. The system prioritizes performance, offline capability, and seamless user experience across devices.
+BookMind follows a modern, mobile-first architecture designed for iOS and Android tablets and phones with intelligent AI integration. The system prioritizes performance, offline capability, and seamless user experience across mobile devices.
+
+**Recommended Tech Stack**: React Native + Ruby on Rails
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Mobile Apps   │    │    Web App      │    │   Desktop PWA   │
-│  (React Native) │    │    (React)      │    │    (Electron)   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
+┌─────────────────┐    ┌─────────────────┐
+│   iOS App       │    │   Android App   │
+│ (React Native)  │    │ (React Native)  │
+│ Phone + Tablet  │    │ Phone + Tablet  │
+└─────────────────┘    └─────────────────┘
+         │                       │
+         └───────────────────────┼
                                  │
               ┌─────────────────────────────────────┐
-              │         API Gateway                 │
-              │      (Express.js/Fastify)          │
+              │         Ruby on Rails API           │
+              │      (JSON API + Action Cable)     │
               └─────────────────────────────────────┘
                                  │
         ┌────────────────────────┼────────────────────────┐
         │                       │                        │
 ┌───────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │  User Service │    │  Book Service   │    │   AI Service    │
-│   (Auth/Prefs)│    │  (Content/Sync) │    │ (NLP/ML/RAG)    │
+│ (Devise API)  │    │(Active Storage) │    │ (OpenAI/Ruby)   │
 └───────────────┘    └─────────────────┘    └─────────────────┘
         │                       │                        │
 ┌───────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  PostgreSQL   │    │   File Storage  │    │ Vector Database │
-│   (Metadata)  │    │    (S3/R2)      │    │  (Pinecone)     │
+│  PostgreSQL   │    │  Cloudflare R2  │    │   Pinecone      │
+│ + pg_vector   │    │  File Storage   │    │ Vector Database │
 └───────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 ## 📱 Frontend Architecture
 
-### React Native + Expo Framework
+### React Native + Expo Framework (Mobile + Tablet Focus)
 
-**Why This Choice**:
-- **Single Codebase**: iOS, Android, and Web from one React Native codebase
-- **Performance**: Native rendering for smooth reading experience
-- **Ecosystem**: Rich library ecosystem for PDF rendering, gestures, etc.
-- **Development Speed**: Hot reload, over-the-air updates
-- **Future-Proof**: Easy migration to React Native New Architecture
+**Why This Choice for Mobile/Tablet**:
+- **Single Codebase**: iOS and Android from one React Native codebase
+- **Native Performance**: Smooth 60fps reading experience on mobile devices
+- **Tablet Optimization**: Excellent support for iPad and Android tablets
+- **Touch-First Design**: Perfect for highlighting, gestures, and reading
+- **Offline Capability**: Essential for reading apps
+- **Development Speed**: Hot reload, over-the-air updates for quick iterations
 
-**Core Dependencies**:
+**Core Dependencies for BookMind**:
 ```json
 {
   "expo": "~49.0.0",
   "react-native": "0.72.6",
+  "typescript": "^5.1.3",
+
+  // Reading & File Handling
   "react-native-pdf": "^6.7.4",
+  "react-native-document-picker": "^9.0.1",
+  "react-native-fs": "^2.20.0",
+  "expo-file-system": "~15.4.4",
+
+  // Gestures & Interactions
   "react-native-gesture-handler": "~2.12.0",
   "react-native-reanimated": "~3.3.0",
-  "expo-sqlite": "~11.3.3",
-  "expo-file-system": "~15.4.4",
-  "expo-document-picker": "~11.5.4"
+  "react-native-vector-icons": "^10.0.0",
+
+  // State & Data Management
+  "@tanstack/react-query": "^4.32.6",
+  "zustand": "^4.4.1",
+  "@react-native-async-storage/async-storage": "1.19.3",
+
+  // Navigation & UI
+  "@react-navigation/native": "^6.1.7",
+  "@react-navigation/bottom-tabs": "^6.5.8",
+  "react-native-safe-area-context": "4.6.3"
 }
 ```
 
 ### State Management
-**Redux Toolkit + RTK Query**:
+**Zustand + React Query**:
 ```typescript
 // Global State Structure
 interface AppState {
@@ -114,27 +134,66 @@ const localSchema = {
 
 ## 🔧 Backend Architecture
 
-### Microservices with Domain-Driven Design
+### Ruby on Rails API with Service Objects
 
-#### 1. User Service
+#### Rails Application Structure
+```ruby
+# Gemfile - Core Dependencies
+gem 'rails', '~> 7.1.0'
+gem 'pg', '~> 1.1'                    # PostgreSQL database
+gem 'devise-api'                      # Authentication
+gem 'jwt'                             # JWT tokens
+gem 'sidekiq'                         # Background jobs
+gem 'redis'                           # Caching and sessions
+gem 'image_processing'                # Image thumbnails
+gem 'aws-sdk-s3'                      # File storage
+gem 'ruby-openai'                     # AI integration
+gem 'pg_search'                       # Full-text search
+gem 'rack-cors'                       # CORS for mobile
+gem 'actioncable'                     # WebSocket for real-time sync
+```
+
+#### 1. User Management (Devise API)
 **Responsibilities**: Authentication, user preferences, subscription management
 
-```typescript
-// User Service API
-class UserService {
-  // Authentication
-  async register(email: string, password: string): Promise<User>
-  async login(email: string, password: string): Promise<AuthTokens>
-  async refreshToken(refreshToken: string): Promise<AuthTokens>
+```ruby
+# app/controllers/api/v1/auth_controller.rb
+class Api::V1::AuthController < ApplicationController
+  def register
+    user = User.create!(user_params)
+    token = generate_token(user)
+    render json: { user: UserSerializer.new(user), token: token }
+  end
 
-  // Preferences
-  async getUserPreferences(userId: string): Promise<UserPreferences>
-  async updatePreferences(userId: string, prefs: Partial<UserPreferences>): Promise<void>
+  def login
+    user = User.find_by!(email: params[:email])
+    if user&.valid_password?(params[:password])
+      token = generate_token(user)
+      render json: { user: UserSerializer.new(user), token: token }
+    else
+      render json: { error: 'Invalid credentials' }, status: :unauthorized
+    end
+  end
 
-  // Subscription
-  async getSubscriptionStatus(userId: string): Promise<SubscriptionStatus>
-  async updateSubscription(userId: string, planId: string): Promise<void>
-}
+  private
+
+  def generate_token(user)
+    JWT.encode({ user_id: user.id, exp: 30.days.from_now.to_i }, Rails.application.secret_key_base)
+  end
+end
+
+# app/models/user.rb
+class User < ApplicationRecord
+  devise :database_authenticatable, :registerable
+
+  has_many :books, dependent: :destroy
+  has_many :highlights, dependent: :destroy
+  has_many :bookmarks, dependent: :destroy
+  has_many :reading_sessions, dependent: :destroy
+
+  enum subscription_tier: { free: 0, pro: 1, premium: 2 }
+end
+```
 
 interface UserPreferences {
   theme: 'light' | 'dark' | 'sepia';
