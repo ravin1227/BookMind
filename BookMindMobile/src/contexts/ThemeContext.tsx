@@ -22,6 +22,12 @@ interface ThemeColors {
   onPrimary: string;
   primaryText: string;
   backgroundSecondary: string;
+  error: string;
+  success: string;
+  warning: string;
+
+  // Shadow colors
+  shadow: string;
 
   // Status bar
   statusBar: string;
@@ -47,6 +53,10 @@ const lightTheme: ThemeColors = {
   onPrimary: '#FFFFFF',
   primaryText: '#FFFFFF',
   backgroundSecondary: '#F9FAFB',
+  error: '#EF4444',
+  success: '#10B981',
+  warning: '#F59E0B',
+  shadow: '#000000',
   statusBar: '#FFFFFF',
 };
 
@@ -63,6 +73,10 @@ const darkTheme: ThemeColors = {
   onPrimary: '#FFFFFF',
   primaryText: '#1F2937',
   backgroundSecondary: '#374151',
+  error: '#EF4444',
+  success: '#10B981',
+  warning: '#F59E0B',
+  shadow: '#000000',
   statusBar: '#1F2937',
 };
 

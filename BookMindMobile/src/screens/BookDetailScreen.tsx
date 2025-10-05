@@ -18,7 +18,6 @@ import {
   Highlighter,
   Pause,
 } from 'lucide-react-native';
-import BottomNavBar from '../components/BottomNavBar';
 import { useTheme } from '../contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
@@ -184,7 +183,6 @@ export default function BookDetailScreen({ navigation, route }: any) {
       </ScrollView>
 
       {/* Bottom Navigation */}
-      <BottomNavBar activeTab="library" navigation={navigation} />
     </View>
   );
 }

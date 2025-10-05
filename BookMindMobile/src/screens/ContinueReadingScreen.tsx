@@ -39,8 +39,60 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const { width, height } = Dimensions.get('window');
 
-export default function ContinueReadingScreen({ navigation, route }: any) {
+interface ContinueReadingScreenProps {
+  navigation: any;
+  route: {
+    params: {
+      book: {
+        id: string;
+        title: string;
+        author: string;
+        coverUrl: string;
+        description: string;
+        rating: number;
+        downloadCount: number;
+        category: string;
+        pages: number;
+        publishedYear: number;
+        isFree: boolean;
+        price?: number;
+      };
+      content: string;
+    };
+  };
+}
+
+export default function ContinueReadingScreen({ navigation, route }: ContinueReadingScreenProps) {
   const { colors } = useTheme();
+
+  // Get book data from route params or use default
+  const bookData = route?.params?.book ? {
+    title: route.params.book.title,
+    chapter: `Chapter 1: ${route.params.book.title}`,
+    currentPage: 1,
+    totalPages: route.params.book.pages,
+    content: route.params.content || `This is a preview of "${route.params.book.title}" by ${route.params.book.author}.
+
+${route.params.book.description}
+
+The story begins here with an engaging narrative that draws readers into the world created by ${route.params.book.author}. This preview gives you a taste of the writing style and story that awaits you in the full book.
+
+As you read through this sample, you'll get a sense of the characters, setting, and themes that make this book special. The author's unique voice and storytelling approach shine through in these opening pages.
+
+Whether you're looking for entertainment, inspiration, or knowledge, this book promises to deliver an engaging reading experience that will keep you turning the pages.`,
+  } : {
+    title: 'BookMind',
+    chapter: 'Chapter 8: Business Models',
+    currentPage: 127,
+    totalPages: 350,
+    content: `The lean canvas provides a structured approach to documenting your business model assumptions. Unlike traditional business plans that can take months to write and are often outdated before they're finished, the lean canvas is designed to be completed in 20 minutes or less.
+
+This one-page business model captures the essential elements of your startup and forces you to think through the key assumptions that need to be tested. The canvas is divided into nine boxes, each representing a critical component of your business model.
+
+Starting with the problem box, you identify the top three problems you believe your customers have. These should be problems worth solving - ones that customers are actively seeking solutions for and would be willing to pay to solve.
+
+The customer segments box helps you define your early adopters - the customers who feel the pain of your problem most acutely and are most likely to buy your initial solution, even if it's not perfect.`,
+  };
 
   // Selection state
   const [selectedText, setSelectedText] = useState('');
@@ -71,21 +123,6 @@ export default function ContinueReadingScreen({ navigation, route }: any) {
   // Refs
   const textInputRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
-
-  // Mock data - will be replaced with actual book data
-  const bookData = {
-    title: 'BookMind',
-    chapter: 'Chapter 8: Business Models',
-    currentPage: 127,
-    totalPages: 350,
-    content: `The lean canvas provides a structured approach to documenting your business model assumptions. Unlike traditional business plans that can take months to write and are often outdated before they're finished, the lean canvas is designed to be completed in 20 minutes or less.
-
-This one-page business model captures the essential elements of your startup and forces you to think through the key assumptions that need to be tested. The canvas is divided into nine boxes, each representing a critical component of your business model.
-
-Starting with the problem box, you identify the top three problems you believe your customers have. These should be problems worth solving - ones that customers are actively seeking solutions for and would be willing to pay to solve.
-
-The customer segments box helps you define your early adopters - the customers who feel the pain of your problem most acutely and are most likely to buy your initial solution, even if it's not perfect.`,
-  };
 
   const handleGoBack = () => {
     navigation.goBack();

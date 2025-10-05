@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+docs/
+
+# Logs
+log/*
+tmp/*
+*.log
+
+# Dependencies
+node_modules/
+bower_components/
+
+# Environment
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+
+# Temp files
+tmp/cache/
+tmp/pids/
+tmp/sockets/
+tmp/uploads/*
+
+# Storage
+storage/*

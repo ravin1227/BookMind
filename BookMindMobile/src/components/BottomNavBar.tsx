@@ -19,6 +19,9 @@ export default function BottomNavBar({ activeTab, onTabPress, navigation }: Bott
         case 'home':
           navigation.navigate('Home');
           break;
+        case 'discover':
+          navigation.navigate('Discover');
+          break;
         case 'library':
           navigation.navigate('Library');
           break;

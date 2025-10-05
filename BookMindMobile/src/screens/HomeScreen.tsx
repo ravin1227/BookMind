@@ -10,6 +10,7 @@ import {
   Dimensions,
   Animated,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Bell,
   BookOpen,
@@ -19,13 +20,19 @@ import {
   ChevronRight,
   Plus,
 } from 'lucide-react-native';
-import BottomNavBar from '../components/BottomNavBar';
 import { useTheme } from '../contexts/ThemeContext';
+import { 
+  getBooksForHomeContinueReading, 
+  getBooksForHomeNextToRead, 
+  getBooksForHomeRecentlyFinished,
+  Book 
+} from '../data/bookData';
 
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }: any) {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   // Animation for header hide/show
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -43,8 +50,10 @@ export default function HomeScreen({ navigation }: any) {
     extrapolate: 'clamp',
   });
 
-  // Mock data - will be replaced with real data later
-  const currentBook = {
+  // Get data from centralized book library
+  const continueReadingBooks = getBooksForHomeContinueReading();
+  const currentBook = continueReadingBooks[0] || {
+    id: '6',
     title: 'The Lean Startup',
     author: 'Eric Ries',
     chapter: 'Chapter 9: Metrics',
@@ -52,7 +61,18 @@ export default function HomeScreen({ navigation }: any) {
     totalPages: 350,
     progress: 73,
     timeLeft: 23,
-    coverUrl: 'https://via.placeholder.com/80x100/CCCCCC/666666?text=Book+Cover',
+    coverUrl: 'https://covers.openlibrary.org/b/isbn/9780307887894-M.jpg',
+    isOwned: true,
+    bookmarksCount: 8,
+    highlightsCount: 47,
+    description: 'A methodology for developing businesses and products that aims to shorten product development cycles and rapidly discover if a proposed business model is viable.',
+    rating: 4.5,
+    downloadCount: 850000,
+    category: 'Business',
+    pages: 336,
+    publishedYear: 2011,
+    isFree: false,
+    price: 12.99,
   };
 
   const dailyGoal = {
@@ -67,51 +87,8 @@ export default function HomeScreen({ navigation }: any) {
     timeRead: 3.2,
   };
 
-  // Mock recommended books from library
-  const recommendedBooks = [
-    {
-      id: '1',
-      title: 'Atomic Habits',
-      author: 'James Clear',
-      coverUrl: 'https://via.placeholder.com/120x160/DDDDDD/777777?text=Atomic+Habits',
-    },
-    {
-      id: '2',
-      title: 'Think Fast and Slow',
-      author: 'Daniel Kahneman',
-      coverUrl: 'https://via.placeholder.com/120x160/F0F0F0/999999?text=Think+Fast',
-    },
-    {
-      id: '3',
-      title: 'The 7 Habits',
-      author: 'Stephen Covey',
-      coverUrl: 'https://via.placeholder.com/120x160/E5E5E5/888888?text=7+Habits',
-    },
-    {
-      id: '4',
-      title: 'Deep Work',
-      author: 'Cal Newport',
-      coverUrl: 'https://via.placeholder.com/120x160/EEEEEE/888888?text=Deep+Work',
-    },
-    {
-      id: '5',
-      title: 'Sapiens',
-      author: 'Yuval Harari',
-      coverUrl: 'https://via.placeholder.com/120x160/F5F5F5/AAAAAA?text=Sapiens',
-    },
-    {
-      id: '6',
-      title: 'Mindset',
-      author: 'Carol Dweck',
-      coverUrl: 'https://via.placeholder.com/120x160/FAFAFA/BBBBBB?text=Mindset',
-    },
-    {
-      id: '7',
-      title: 'The Power of Now',
-      author: 'Eckhart Tolle',
-      coverUrl: 'https://via.placeholder.com/120x160/F8F8F8/999999?text=Power+Now',
-    },
-  ];
+  // Get recommended books from centralized data
+  const recommendedBooks = getBooksForHomeNextToRead();
 
   const handleContinueReading = () => {
     navigation.navigate('ContinueReading', {
@@ -182,7 +159,12 @@ export default function HomeScreen({ navigation }: any) {
         <View style={dynamicStyles.continueReadingCard}>
           <View style={styles.bookSection}>
             <View style={styles.bookCoverContainer}>
-              <Image source={{ uri: currentBook.coverUrl }} style={styles.bookCover} />
+              <Image 
+                source={{ uri: currentBook.coverUrl }} 
+                style={styles.bookCover}
+                resizeMode="cover"
+                onError={() => console.log('Failed to load cover for:', currentBook.title)}
+              />
             </View>
 
             <View style={styles.bookInfo}>
@@ -195,7 +177,7 @@ export default function HomeScreen({ navigation }: any) {
                 <Text style={[styles.chapterInfo, { color: colors.textSecondary }]}>{currentBook.chapter}</Text>
               </View>
               <Text style={[styles.pageInfo, { color: colors.textTertiary }]}>
-                Page {currentBook.currentPage} of {currentBook.totalPages}
+                Page {currentBook.currentPage} of {currentBook.pages || 350}
               </Text>
             </View>
           </View>
@@ -206,7 +188,7 @@ export default function HomeScreen({ navigation }: any) {
               <Text style={[styles.progressPercentage, { color: colors.text }]}>{currentBook.progress}%</Text>
             </View>
             <View style={[styles.progressBar, { backgroundColor: colors.borderLight }]}>
-              <View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${currentBook.progress}%` }]} />
+              <View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${currentBook.progress || 0}%` }]} />
             </View>
             <View style={styles.timeLeftRow}>
               <Clock size={16} color={colors.textSecondary} strokeWidth={2} />
@@ -282,7 +264,12 @@ export default function HomeScreen({ navigation }: any) {
           <View style={styles.booksGrid}>
             {recommendedBooks.map((book, index) => (
               <TouchableOpacity key={book.id} style={styles.bookGridItem} onPress={() => handleBookPress(book)}>
-                <Image source={{ uri: book.coverUrl }} style={styles.bookGridCover} />
+                <Image 
+                  source={{ uri: book.coverUrl }} 
+                  style={styles.bookGridCover}
+                  resizeMode="cover"
+                  onError={() => console.log('Failed to load cover for:', book.title)}
+                />
               </TouchableOpacity>
             ))}
 
@@ -297,11 +284,10 @@ export default function HomeScreen({ navigation }: any) {
         </View>
 
         {/* Add some bottom padding for the navigation */}
-        <View style={{ height: 100 }} />
+        <View style={{ height: 100 + insets.bottom }} />
       </Animated.ScrollView>
 
       {/* Bottom Navigation */}
-      <BottomNavBar activeTab="home" navigation={navigation} />
     </View>
   );
 }

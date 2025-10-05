@@ -10,6 +10,7 @@ import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
+import { AuthProvider } from './src/contexts/AuthContext';
 
 function AppWithTheme() {
   const { theme, colors } = useTheme();
@@ -28,7 +29,9 @@ function AppWithTheme() {
 function App() {
   return (
     <ThemeProvider>
-      <AppWithTheme />
+      <AuthProvider>
+        <AppWithTheme />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

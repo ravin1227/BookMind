@@ -100,10 +100,92 @@ Beta testing, app store submission, and marketing
 
 ## 🚀 Getting Started
 
-1. **Market Validation**: Create landing page and gather user feedback
-2. **Technical Prototype**: Build basic PDF reader with AI chat
-3. **User Research**: Interview target users for feature validation
-4. **Development**: Follow the detailed roadmap in `/docs/`
+### Prerequisites
+
+- **Node.js** (v16 or higher)
+- **Ruby** (check `.ruby-version` in BookMindAPI/)
+- **PostgreSQL** (for database)
+- **Redis** (for background jobs)
+- **iOS Simulator** or **Android Emulator** (for mobile app testing)
+
+### Backend Setup (Rails API)
+
+1. **Navigate to API directory**
+   ```bash
+   cd BookMindAPI
+   ```
+
+2. **Install Ruby dependencies**
+   ```bash
+   bundle install
+   ```
+
+3. **Setup environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` and configure database credentials, JWT secret, and API keys.
+
+4. **Setup database**
+   ```bash
+   # Make sure PostgreSQL is running first
+   bundle exec rails db:create
+   bundle exec rails db:migrate
+   bundle exec rails db:seed  # if seeds exist
+   ```
+
+5. **Start the Rails server**
+   ```bash
+   bundle exec rails server
+   ```
+   API will be available at `http://localhost:3000`
+
+### Mobile App Setup (React Native)
+
+1. **Navigate to mobile directory**
+   ```bash
+   cd BookMindMobile
+   ```
+
+2. **Install Node dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Setup environment**
+   ```bash
+   cp .env.production .env.local
+   ```
+
+4. **iOS Setup (macOS only)**
+   ```bash
+   cd ios && pod install && cd ..
+   ```
+
+5. **Start the mobile app**
+   ```bash
+   # For iOS
+   npm run ios
+
+   # For Android
+   npm run android
+   ```
+
+### Development Workflow
+
+1. **Start Backend Services:**
+   ```bash
+   # Terminal 1: Rails API
+   cd BookMindAPI && bundle exec rails server
+
+   # Make sure PostgreSQL and Redis are running
+   ```
+
+2. **Start Mobile App:**
+   ```bash
+   # Terminal 2: React Native
+   cd BookMindMobile && npm start
+   ```
 
 ---
 

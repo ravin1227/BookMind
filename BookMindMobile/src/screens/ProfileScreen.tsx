@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Switch,
   Image,
+  Alert,
 } from 'react-native';
 import {
   ArrowLeft,
@@ -23,9 +24,11 @@ import {
   Mic,
 } from 'lucide-react-native';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function ProfileScreen({ navigation }: any) {
   const { theme, setTheme, colors } = useTheme();
+  const { logout, user } = useAuth();
 
   // Toggle states
   const [autoBookmark, setAutoBookmark] = useState(true);
@@ -92,8 +95,22 @@ export default function ProfileScreen({ navigation }: any) {
     console.log('Notification preferences tapped');
   };
 
-  const handleSignOut = () => {
-    console.log('Sign out tapped');
+  const handleSignOut = async () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            await logout();
+            // Navigation will be handled automatically by AppNavigator
+          }
+        }
+      ]
+    );
   };
 
   const dynamicStyles = createStyles(colors);
